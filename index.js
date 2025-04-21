@@ -8,6 +8,12 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
+// ✅ Default route to avoid "Cannot GET /"
+app.get('/', (req, res) => {
+  res.send('Welcome to the ChatBot API! Use POST /message to talk to the bot.');
+});
+
+// ✅ Chatbot endpoint
 app.post('/message', async (req, res) => {
   const userMessage = req.body.message;
 
@@ -24,7 +30,7 @@ app.post('/message', async (req, res) => {
         headers: {
           Authorization: `Bearer ${process.env.API_TOKEN}`,
           "Content-Type": "application/json",
-          "HTTP-Referer": "http://localhost:3000", // change to your frontend domain if needed
+          "HTTP-Referer": "http://localhost:3000", // ✅ Change to your frontend URL if needed
           "X-Title": "ChatBot App"
         }
       }
@@ -38,6 +44,8 @@ app.post('/message', async (req, res) => {
   }
 });
 
-app.listen(3000, () => {
-  console.log('Backend running on http://localhost:3000');
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Backend running on http://localhost:${PORT}`);
 });
